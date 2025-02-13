@@ -1,0 +1,62 @@
+import tkinter as tk
+import secrets
+
+# tkinter setup
+root = tk.Tk()
+root.title("Dice Roller")
+
+# Variables to track total rolls and their sum
+total_rolls = 0
+roll_sum = 0
+
+# Function to roll the dice and display the result
+def roll_dice():
+    global total_rolls, roll_sum
+    dice_faces = int(dice_entry.get())
+    dice_roll = secrets.randbelow(dice_faces) + 1
+    total_rolls += 1
+    roll_sum += dice_roll
+
+    # Calculate average
+    average_roll = roll_sum / total_rolls
+
+    # Update labels with the result and average
+    result_label.config(text=f"You rolled a {dice_roll}!")
+    average_label.config(text=f"Average Roll: {average_roll:.2f}")
+
+# Function to reset the average
+def reset_average():
+    global total_rolls, roll_sum
+    total_rolls = 0
+    roll_sum = 0
+    average_roll = 0
+    average_label.config(text="Average Roll: N/A")
+
+# Label to display the result
+result_label = tk.Label(root, text="Roll the dice!", fg="red")
+result_label.pack(pady=20)
+
+# Label to display the average roll
+average_label = tk.Label(root, text="Average Roll: N/A")
+average_label.pack(pady=10)
+
+#label to choose dice
+dice_faces_label = tk.Label(root, text="Dice faces:")
+dice_faces_label.pack(pady=10)
+
+dice_entry = tk.Entry(root, width=25)
+dice_entry.insert(0, "6")
+dice_entry.pack(pady=10)
+
+# Button to roll the dice
+roll_button = tk.Button(root, text="Roll Dice", command=roll_dice)
+roll_button.pack(pady=20)
+
+# Button to reset the average roll
+roll_button = tk.Button(root, text="Reset Average", command=reset_average)
+roll_button.pack(pady=20)
+
+# Button to exit
+tk.Button(text="Exit", command=root.quit, width=15).pack()
+
+root.mainloop()
