@@ -8,12 +8,22 @@ root.title("Dice Roller")
 # Variables to track total rolls and their sum
 total_rolls = 0
 roll_sum = 0
+lucky_mode = tk.BooleanVar(value=False)  # Variable for lucky rolls toggle
 
 # Function to roll the dice and display the result
 def roll_dice():
     global total_rolls, roll_sum
     dice_faces = int(dice_entry.get())
-    dice_roll = secrets.randbelow(dice_faces) + 1
+    
+    if lucky_mode.get():  # If lucky rolls is enabled
+        roll1 = secrets.randbelow(dice_faces) + 1
+        roll2 = secrets.randbelow(dice_faces) + 1
+        dice_roll = max(roll1, roll2)
+        result_text = f"Lucky Rolls: {roll1} & {roll2} = You rolled a {dice_roll}!"
+    else:  # Normal roll
+        dice_roll = secrets.randbelow(dice_faces) + 1
+        result_text = f"You rolled a {dice_roll}!"
+
     total_rolls += 1
     roll_sum += dice_roll
 
@@ -21,7 +31,10 @@ def roll_dice():
     average_roll = roll_sum / total_rolls
 
     # Update labels with the result and average
-    result_label.config(text=f"You rolled a {dice_roll}!")
+    if dice_roll == dice_faces:
+        result_label.config(text="MAX ROLL!")
+    else:
+        result_label.config(text=result_text)
     average_label.config(text=f"Average Roll: {average_roll:.2f}")
 
 # Function to reset the average
@@ -40,7 +53,7 @@ result_label.pack(pady=20)
 average_label = tk.Label(root, text="Average Roll: N/A")
 average_label.pack(pady=10)
 
-#label to choose dice
+# Label to choose dice
 dice_faces_label = tk.Label(root, text="Dice faces:")
 dice_faces_label.pack(pady=10)
 
@@ -48,13 +61,18 @@ dice_entry = tk.Entry(root, width=25)
 dice_entry.insert(0, "6")
 dice_entry.pack(pady=10)
 
+# Checkbox for lucky rolls
+lucky_checkbox = tk.Checkbutton(root, text="Enable Lucky Rolls (rolls twice, takes highest)", 
+                              variable=lucky_mode)
+lucky_checkbox.pack(pady=10)
+
 # Button to roll the dice
 roll_button = tk.Button(root, text="Roll Dice", command=roll_dice)
 roll_button.pack(pady=20)
 
 # Button to reset the average roll
-roll_button = tk.Button(root, text="Reset Average", command=reset_average)
-roll_button.pack(pady=20)
+reset_button = tk.Button(root, text="Reset Average", command=reset_average)
+reset_button.pack(pady=20)
 
 # Button to exit
 tk.Button(text="Exit", command=root.quit, width=15).pack()
